@@ -1,4 +1,4 @@
-package com.andrwe.study.algorithm;
+package com.andrew.study.algorithm;
 
 import java.util.Arrays;
 

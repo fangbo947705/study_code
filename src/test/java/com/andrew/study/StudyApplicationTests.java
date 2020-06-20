@@ -1,11 +1,10 @@
-package com.andrwe.study;
+package com.andrew.study;
 
-import com.andrwe.study.utils.redis.RedisLockUtil;
+import com.andrew.study.utils.redis.RedisLockUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
-import java.util.Random;
 import java.util.UUID;
 
 @SpringBootTest

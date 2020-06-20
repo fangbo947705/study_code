@@ -1,4 +1,4 @@
-package com.andrwe.study.utils.bean;
+package com.andrew.study.utils.bean;
 
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.cglib.core.Converter;
