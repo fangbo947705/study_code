@@ -1,0 +1,19 @@
+server:
+  port: 8082
+  undertow:
+    threads:
+      io: 4
+      worker: 200
+    buffer-size: 1024
+    direct-buffers: true
+logging:
+  file:
+    name: ${spring.application.name}
+    path: /Users/andrew/logs/${spring.application.name}
+  config: classpath:log4j2.xml
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://root:123456@localhost:8888/eureka

@@ -1,0 +1,35 @@
+#server:
+#  port: 8083
+##  servlet:
+##    context-path: /${spring.application.name}
+#spring:
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/test
+#    username: root
+#    password: 123456@Abc
+#    hikari:
+#      connection-test-query: select 1 from dual
+#      connection-timeout: 30000
+#      maximum-pool-size: 50
+#      minimum-idle: 10
+#      idle-timeout: 600000
+#      max-lifetime: 1800000
+#      pool-name: custom-hikari-pool
+#    type: com.zaxxer.hikari.HikariDataSource
+#  boot:
+#    admin:
+#      client:
+#        url: http://localhost:8800
+#  cloud:
+#    nacos:
+#      discovery:
+#        server-addr: 127.0.0.1:8848
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: '*'
+#  endpoint:
+#    health:
+#      show-details: always

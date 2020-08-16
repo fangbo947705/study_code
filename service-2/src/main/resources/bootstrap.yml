@@ -1,0 +1,12 @@
+spring:
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+        file-extension: yml
+        namespace: df18bc5e-e358-450d-84d9-87a7d820445f
+        group: DEFAULT_GROUP_DEV
+  application:
+    name: service-2
+  profiles:
+    active: dev

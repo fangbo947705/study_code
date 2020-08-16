@@ -1,0 +1,49 @@
+server:
+  port: 8881
+  undertow:
+    threads:
+      io: 4
+      worker: 200
+    buffer-size: 1024
+    direct-buffers: true
+#  servlet:
+#    context-path: /gateway
+logging:
+  file:
+    name: ${spring.application.name}
+    path: /Users/andrew/logs/${spring.application.name}
+  config: classpath:log4j2.xml
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: service-3
+          uri: lb://service-3
+          predicates:
+            - Path=/service-3/**
+          filters:
+#            - StripPrefix=1
+#            - PrefixPath=/service-3
+#            - RewritePath=/service-3/(?<segment>.*), /service-3/service-3/$\{segment}
+        - id: monitor-admin-server-nacos
+          uri: lb://monitor-admin-server-nacos
+          predicates:
+            - Path=/monitor-admin-server-nacos
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+#        metadata:
+#          management:
+#            context-path: ${server.servlet.context-path}/actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always

@@ -1,0 +1,45 @@
+server:
+  port: 8880
+  undertow:
+    threads:
+      io: 4
+      worker: 200
+    buffer-size: 1024
+    direct-buffers: true
+#  servlet:
+#    context-path: /gateway
+logging:
+  file:
+    name: ${spring.application.name}
+    path: /Users/andrew/logs/${spring.application.name}
+  config: classpath:log4j2.xml
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://root:123456@localhost:8888/eureka
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: study-service
+          uri: lb://study
+          predicates:
+            - Path=/study
+        - id: monitor-admin-server
+          uri: lb://monitor-admin-server
+          predicates:
+            - Path=/monitor-admin-server
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always

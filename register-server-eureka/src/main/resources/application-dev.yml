@@ -1,0 +1,24 @@
+server:
+  port: 8888
+eureka:
+  instance:
+    appname: eureka-register-center
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://root:123456@localhost:8888/eureka
+  server:
+    #自我保护模式
+    enable-self-preservation: false
+    eviction-interval-timer-in-ms: 40000
+spring:
+#  security:
+#    user:
+#      name: root
+#      password: 123456
+  boot:
+    admin:
+      client:
+        url: http://localhost:8800

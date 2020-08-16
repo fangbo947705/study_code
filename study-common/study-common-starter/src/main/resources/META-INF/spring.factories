@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.andrew.study.common.starter.config.FilterConfig,\
+com.andrew.study.common.starter.config.RestTemplateConfig

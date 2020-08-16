@@ -1,0 +1,25 @@
+server:
+  port: 8801
+#  servlet:
+#    context-path: /monitor
+spring:
+  security:
+    user:
+      name: root
+      password: 123456
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+#        metadata:
+#          management:
+#            context-path: ${server.servlet.context-path}/actuator
+management:
+  endpoints:
+    web:
+#      base-path: /monitor
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always

@@ -1,0 +1,74 @@
+server:
+  port: 8081
+  undertow:
+    threads:
+      io: 4
+      worker: 200
+    buffer-size: 1024
+    direct-buffers: true
+  servlet:
+    context-path: /${spring.application.name}
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/test
+    username: root
+    password: 123456@Abc
+    hikari:
+      connection-test-query: select 1 from dual
+      connection-timeout: 30000
+      maximum-pool-size: 50
+      minimum-idle: 10
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      pool-name: custom-hikari-pool
+    type: com.zaxxer.hikari.HikariDataSource
+  redis:
+    database: 0
+    host: localhost
+    port: 6379
+    password: 123456
+    lettuce:
+      pool:
+        max-active: 50
+        max-idle: 8
+        max-wait: -1
+        min-idle: 0
+    timeout: 6000
+  boot:
+    admin:
+      client:
+        url: http://localhost:8800
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+#      base-path: /study
+  endpoint:
+    health:
+      show-details: always
+logging:
+  file:
+    name: ${spring.application.name}
+    path: /Users/andrew/logs/${spring.application.name}
+  config: classpath:log4j2.xml
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.log4j2.Log4j2Impl
+eureka:
+  instance:
+    prefer-ip-address: true
+    appname: study
+    home-page-url-path: ${server.servlet.context-path}
+    status-page-url-path: ${server.servlet.context-path}/actuator/info
+    health-check-url-path: ${server.servlet.context-path}/actuator/health
+    metadata-map:
+#      user.name: root
+#      user.password: 123456
+       management:
+         context-path: ${server.servlet.context-path}/actuator
+  client:
+    service-url:
+      defaultZone: http://root:123456@localhost:8888/eureka
+
