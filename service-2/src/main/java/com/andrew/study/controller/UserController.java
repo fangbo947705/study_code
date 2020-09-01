@@ -1,10 +1,13 @@
 package com.andrew.study.controller;
 
+import com.andrew.common.service.IRedisLockService;
+import com.andrew.common.util.UuidUtil;
 import com.andrew.study.model.User;
 import com.andrew.study.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author bo.fang
@@ -35,10 +39,17 @@ public class UserController {
     @Resource(name = "customRestTemplate")
     private RestTemplate restTemplate;
 
+    @Resource
+    private IRedisLockService redisLockService;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
+
     @GetMapping("/{id}")
     public Object selectById(@PathVariable("id") Long id) {
         log.info(UserController.class.getName() + "selectById,id:{}", id);
-        return userService.selectById(id);
+        return redisLockService.checkAndAddRedisCache("service2-", IUserService.class, "selectById", 60000L, id);
+//        return userService.selectById(id);
     }
 
     @PostMapping("/save")
@@ -54,6 +65,12 @@ public class UserController {
     @GetMapping("/testRestTemplate")
     public Object testRestTemplate() {
         return restTemplate.getForObject("http://127.0.0.1:8083/user/12", String.class);
+    }
+
+    @GetMapping("/testRedisLock")
+    public boolean testRedisLock() {
+        stringRedisTemplate.opsForValue().set("nihao", UuidUtil.createUuidWithout(), 100, TimeUnit.SECONDS);
+        return redisLockService.lock("nihao_lock", UuidUtil.createUuidWithout(), 10L, 60L);
     }
 
 }

@@ -39,10 +39,10 @@ public class MdcFilter implements Filter {
         MDC.put(MdcConstant.APP_SOURCE, appSource);
         MDC.put(MdcConstant.VERSION, version);
         filterChain.doFilter(servletRequest, servletResponse);
+        MDC.clear();
     }
 
     @Override
     public void destroy() {
-        MDC.clear();
     }
 }

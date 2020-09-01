@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.andrew.study.common.starter.config.FilterConfig,\
-com.andrew.study.common.starter.config.RestTemplateConfig
+com.andrew.study.common.starter.config.RestTemplateConfig,\
+com.andrew.study.common.starter.config.RedisLockConfig

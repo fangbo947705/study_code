@@ -1,7 +1,7 @@
 package com.andrew.study.common.starter.config;
 
 import com.andrew.study.common.starter.interceptor.RestTemplateInterceptor;
-import com.andrew.study.common.starter.properties.RestTemplateProperties;
+import com.andrew.common.properties.RestTemplateProperties;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.config.Registry;
@@ -19,7 +19,6 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
-import java.util.List;
 
 /**
  * @Author bo.fang

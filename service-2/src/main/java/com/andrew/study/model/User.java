@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
+import java.io.Serializable;
 
 /**
  * @Author bo.fang
@@ -21,7 +22,10 @@ import javax.persistence.Version;
 @Table(name = "t_user", schema = "test", catalog = "")
 @DynamicInsert
 @DynamicUpdate
-public class User {
+public class User implements Serializable {
+
+    private static final long serialVersionUID = -5624383986051752705L;
+
     private long id;
     private Integer age;
     private String name;

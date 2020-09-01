@@ -18,7 +18,7 @@ public interface IUserService {
      * @param id
      * @return
      */
-    @GetMapping(value = "/service-2/user/{id}")
+    @GetMapping(value = "/user/{id}")
     User selectById(@PathVariable("id") Long id);
 
     /**
