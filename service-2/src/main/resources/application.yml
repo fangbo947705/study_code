@@ -1,0 +1,5 @@
+spring.global.exception.enable: true
+global:
+  response:
+    handler:
+      enable: true

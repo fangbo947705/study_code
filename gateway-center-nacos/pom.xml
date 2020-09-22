@@ -57,6 +57,17 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-netflix-ribbon</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.andrew</groupId>
+            <artifactId>study-common-starter</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-web</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
     <build>

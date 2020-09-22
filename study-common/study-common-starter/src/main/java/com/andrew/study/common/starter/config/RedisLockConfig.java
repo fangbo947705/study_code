@@ -1,8 +1,8 @@
 package com.andrew.study.common.starter.config;
 
 import com.andrew.common.properties.RedisLockProperties;
-import com.andrew.common.service.IRedisLockService;
-import com.andrew.common.service.impl.RedisLockServiceImpl;
+import com.andrew.common.service.IRedisService;
+import com.andrew.common.service.impl.RedisServiceImpl;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,8 +24,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisLockConfig {
 
     @Bean
-    public IRedisLockService redisLockService() {
-        return new RedisLockServiceImpl();
+    public IRedisService redisLockService() {
+        return new RedisServiceImpl();
     }
 
     @Bean

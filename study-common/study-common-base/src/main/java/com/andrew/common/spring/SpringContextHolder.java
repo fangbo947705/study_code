@@ -14,11 +14,11 @@ import java.util.Objects;
  */
 public class SpringContextHolder implements ApplicationContextAware, DisposableBean {
 
-    private static ApplicationContext ctx;
+    private static ApplicationContext applicationContext;
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        SpringContextHolder.ctx = applicationContext;
+    public void setApplicationContext(ApplicationContext ctx) throws BeansException {
+        applicationContext = ctx;
     }
 
     /**
@@ -30,7 +30,7 @@ public class SpringContextHolder implements ApplicationContextAware, DisposableB
      */
     public static <T> T getBean(Class<T> clazz) {
         checkApplicationContext();
-        return ctx.getBean(clazz);
+        return applicationContext.getBean(clazz);
     }
 
     /**
@@ -42,17 +42,17 @@ public class SpringContextHolder implements ApplicationContextAware, DisposableB
      */
     public static <T> T getBean(String name) {
         checkApplicationContext();
-        return (T) ctx.getBean(name);
+        return (T) applicationContext.getBean(name);
     }
 
 
     @Override
     public void destroy() throws Exception {
-        ctx = null;
+        applicationContext = null;
     }
 
     private static void checkApplicationContext() {
-        if (Objects.isNull(ctx)) {
+        if (Objects.isNull(applicationContext)) {
             throw new RuntimeException("applicationContext is null ,please check if it has been injected success");
         }
     }

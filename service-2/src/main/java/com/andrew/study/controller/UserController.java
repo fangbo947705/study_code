@@ -1,6 +1,7 @@
 package com.andrew.study.controller;
 
-import com.andrew.common.service.IRedisLockService;
+import com.andrew.common.annotation.GlobalResponseBody;
+import com.andrew.common.service.IRedisService;
 import com.andrew.common.util.UuidUtil;
 import com.andrew.study.model.User;
 import com.andrew.study.service.IUserService;
@@ -40,16 +41,17 @@ public class UserController {
     private RestTemplate restTemplate;
 
     @Resource
-    private IRedisLockService redisLockService;
+    private IRedisService redisLockService;
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
     @GetMapping("/{id}")
+    @GlobalResponseBody
     public Object selectById(@PathVariable("id") Long id) {
         log.info(UserController.class.getName() + "selectById,id:{}", id);
-        return redisLockService.checkAndAddRedisCache("service2-", IUserService.class, "selectById", 60000L, id);
-//        return userService.selectById(id);
+//        return redisLockService.checkAndAddRedisCache("service2-", IUserService.class, "selectById", 60000L, id);
+        return userService.selectById(id);
     }
 
     @PostMapping("/save")

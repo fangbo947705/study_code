@@ -2,12 +2,11 @@ package com.andrew.common.service.impl;
 
 import com.andrew.common.constant.BaseConstant;
 import com.andrew.common.properties.RedisLockProperties;
-import com.andrew.common.service.IRedisLockService;
+import com.andrew.common.service.IRedisService;
 import com.andrew.common.spring.SpringContextHolder;
 import com.andrew.common.util.MD5Util;
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.codec.digest.Md5Crypt;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -24,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
 /**
  * @Author bo.fang
@@ -33,13 +32,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 @Slf4j
 @Component
-public class RedisLockServiceImpl implements IRedisLockService {
+public class RedisServiceImpl implements IRedisService {
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
     @Resource
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Resource
     private RedisLockProperties redisLockProperties;
@@ -63,7 +62,8 @@ public class RedisLockServiceImpl implements IRedisLockService {
         log.info("get redis distributed lock{},time：{}", lockKey, LocalDateTime.now());
         while (true) {
             if (System.currentTimeMillis() - startTime > maxTryLockTime) {
-                log.info("get redis Distributed lock {} timeout:{},时间：{}", lockKey, maxTryLockTime, LocalDateTime.now());
+                log.info("get redis Distributed lock {} timeout:{},时间：{}", lockKey, maxTryLockTime,
+                        LocalDateTime.now());
                 return false;
             }
             boolean result = stringRedisTemplate.opsForValue()
@@ -72,6 +72,7 @@ public class RedisLockServiceImpl implements IRedisLockService {
                 log.info("get redis Distributed lock {} success,time：{}", lockKey, LocalDateTime.now());
                 return true;
             }
+
         }
     }
 
@@ -108,6 +109,30 @@ public class RedisLockServiceImpl implements IRedisLockService {
         return invokeResult(clazz, methodName, params);
     }
 
+    @Override
+    public <T> T checkAndAddRedisCache(String prefixKey, Supplier<T> supplier, Long expireTime, Object... params) {
+        log.info("check and add redis cache ,prefixKey:{},expireName:{},params:{}",
+                prefixKey, expireTime, params);
+        Map<String, Object> keyMap = generatorCacheKey(prefixKey, params);
+        String cacheKey = (String) keyMap.get("key");
+        Boolean flag = (Boolean) keyMap.get("flag");
+        log.info("check and add redis cache key:{},flag:{}", cacheKey, flag);
+        if (flag) {
+            T result = (T) redisTemplate.opsForValue().get(cacheKey);
+            if (Objects.nonNull(result)) {
+                return result;
+            }
+            result = supplier.get();
+            if (Objects.isNull(result)) {
+                return null;
+            }
+            redisTemplate.opsForValue().set(cacheKey, result, getExpireTime(expireTime), TimeUnit.SECONDS);
+            return result;
+        }
+        return supplier.get();
+    }
+
+
     /**
      * 获取过期时间
      *
@@ -130,11 +155,9 @@ public class RedisLockServiceImpl implements IRedisLockService {
     private Object invokeResult(Class<?> clazz, String methodName, Object... params) {
         Method method = Arrays.stream(clazz.getDeclaredMethods())
                 .filter(mt -> methodName.equalsIgnoreCase(mt.getName()))
-                .findFirst().orElse(null);
-        if (Objects.isNull(method)) {
-            throw new RuntimeException(String.format("haven't find this method :%s on " +
-                    "class:%s", methodName, clazz));
-        }
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException(String.format("haven't find this method :%s on " +
+                        "class:%s", methodName, clazz)));
         Object objectBean = SpringContextHolder.getBean(clazz);
         try {
             return method.invoke(objectBean, params);
@@ -152,56 +175,20 @@ public class RedisLockServiceImpl implements IRedisLockService {
      * @return
      */
     private Map<String, Object> generatorCacheKey(String prefixKey, Object... params) {
-        AtomicBoolean flag = new AtomicBoolean(true);
+        boolean flag = true;
         Map<String, Object> map = new HashMap<>(8);
         StringBuilder sb = new StringBuilder();
-        Map<String, Object> resultMap = new HashMap<>(8);
-        Arrays.stream(params).forEach(param -> {
-            if (param instanceof Integer
-                    || param instanceof Double
-                    || param instanceof Boolean
-                    || param instanceof Float
-                    || param instanceof String
-                    || param instanceof Long
-                    || param instanceof Short
-                    || param instanceof Character) {
-                sb.append(param).append('&');
-                return;
-            }
-            if (param.getClass().isArray()) {
 
-                return;
-            }
-            if (param instanceof Map) {
-                resultMap.putAll((Map<? extends String, ?>) param);
-                return;
-            }
-            try {
-                resultMap.putAll(BeanUtils.describe(param));
-            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                flag.set(false);
-            }
-        });
-        if (!resultMap.isEmpty()) {
-            resultMap.forEach((key, value) -> sb.append(key).append('=').append(value).append('&'));
+        if (Objects.isNull(params) || params.length == 0) {
+            flag = false;
+        } else {
+            Gson gson = new Gson();
+            Arrays.stream(params)
+                    .forEach(param -> sb.append(gson.toJson(param)));
         }
         String key = prefixKey + "-" + MD5Util.getMD5(sb.toString());
-        map.put("flag", flag.get());
+        map.put("flag", flag);
         map.put("key", key);
         return map;
-    }
-
-    public static void main(String[] args) {
-        Integer[] integers = new Integer[2];
-        integers[0] = 1;
-        integers[1] = 2;
-        test(1, 2, integers);
-    }
-
-    public static void test(Object... a) {
-        Arrays.stream(a).forEach(s -> {
-            System.out.println(s.getClass().isArray());
-        });
-
     }
 }

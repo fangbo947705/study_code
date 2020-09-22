@@ -1,11 +1,13 @@
 package com.andrew.common.service;
 
+import java.util.function.Supplier;
+
 /**
  * @Author bo.fang
  * @Description
  * @Date 9:10 下午 2020/9/1
  */
-public interface IRedisLockService {
+public interface IRedisService {
     /**
      * redis 分布式锁
      *
@@ -48,4 +50,17 @@ public interface IRedisLockService {
      * @return
      */
     Object checkAndAddRedisCache(String prefixKey, Class<?> clazz, String methodName, Long expireTime, Object... param);
+
+    /**
+     * check redis cache
+     * if null query and set value
+     * if exist return
+     *
+     * @param prefixKey
+     * @param supplier
+     * @param expireTime
+     * @param params
+     * @return
+     */
+    <T> T checkAndAddRedisCache(String prefixKey, Supplier<T> supplier, Long expireTime, Object... params);
 }
