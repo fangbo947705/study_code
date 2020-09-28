@@ -72,7 +72,7 @@ public class UserController {
     @GetMapping("/testRedisLock")
     public boolean testRedisLock() {
         stringRedisTemplate.opsForValue().set("nihao", UuidUtil.createUuidWithout(), 100, TimeUnit.SECONDS);
-        return redisLockService.lock("nihao_lock", UuidUtil.createUuidWithout(), 10L, 60L);
+        return redisLockService.lock("nihao_lock", UuidUtil.createUuidWithout(), 60L);
     }
 
 }

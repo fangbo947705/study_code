@@ -17,25 +17,22 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: service-3
-          uri: lb://service-3
+        - id: service-2
+          uri: http://127.0.0.1:8083
           predicates:
-            - Path=/service-3/**
-          filters:
-#            - StripPrefix=1
-#            - PrefixPath=/service-3
-#            - RewritePath=/service-3/(?<segment>.*), /service-3/service-3/$\{segment}
+            - Path=/service-2/**
+        #          filters:
+        #            - StripPrefix=1
+        #            - PrefixPath=/service-2
+        #            - RewritePath=/service-3/(?<segment>.*), /service-3/service-3/$\{segment}
         - id: monitor-admin-server-nacos
           uri: lb://monitor-admin-server-nacos
           predicates:
             - Path=/monitor-admin-server-nacos
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true
-    nacos:
-      discovery:
-        server-addr: 127.0.0.1:8848
+  boot:
+    admin:
+      client:
+        url: http://127.0.0.1:8801
 #        metadata:
 #          management:
 #            context-path: ${server.servlet.context-path}/actuator

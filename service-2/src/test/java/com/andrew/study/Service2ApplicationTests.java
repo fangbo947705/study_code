@@ -23,8 +23,8 @@ public class Service2ApplicationTests {
     @Test
     public void test(){
         String key = "test";
-        redisLockService.lock(key,key,5L,10);
-        redisLockService.lock(key,key,5L,10);
-        redisLockService.lock("aaa","aaa",5L,10);
+        redisLockService.lock(key,key,10);
+        redisLockService.lock(key,key,10);
+        redisLockService.lock("aaa","aaa",10);
     }
 }

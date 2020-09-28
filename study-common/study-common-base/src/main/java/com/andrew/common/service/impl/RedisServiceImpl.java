@@ -52,28 +52,20 @@ public class RedisServiceImpl implements IRedisService {
 
     @Override
     public boolean lock(String key, String value) {
-        return lock(key, value, redisLockProperties.getMaxTryLockTime(), redisLockProperties.getLockTime());
+        return lock(key, value, redisLockProperties.getLockTime());
     }
 
     @Override
-    public boolean lock(String key, String value, long maxTryLockTime, long lockTime) {
+    public boolean lock(String key, String value, long lockTime) {
         String lockKey = redisLockProperties.getRedisLockKeyPrefix() + key;
-        long startTime = System.currentTimeMillis();
         log.info("get redis distributed lock{},time：{}", lockKey, LocalDateTime.now());
-        while (true) {
-            if (System.currentTimeMillis() - startTime > maxTryLockTime) {
-                log.info("get redis Distributed lock {} timeout:{},时间：{}", lockKey, maxTryLockTime,
-                        LocalDateTime.now());
-                return false;
-            }
-            boolean result = stringRedisTemplate.opsForValue()
-                    .setIfAbsent(lockKey, value, lockTime, TimeUnit.SECONDS);
-            if (result) {
-                log.info("get redis Distributed lock {} success,time：{}", lockKey, LocalDateTime.now());
-                return true;
-            }
-
+        boolean result = stringRedisTemplate.opsForValue()
+                .setIfAbsent(lockKey, value, lockTime, TimeUnit.SECONDS);
+        if (result) {
+            log.info("get redis Distributed lock {} success,time：{}", lockKey, LocalDateTime.now());
+            return true;
         }
+        return false;
     }
 
 

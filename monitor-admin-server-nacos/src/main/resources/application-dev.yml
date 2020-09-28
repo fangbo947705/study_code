@@ -3,10 +3,10 @@ server:
 #  servlet:
 #    context-path: /monitor
 spring:
-  security:
-    user:
-      name: root
-      password: 123456
+#  security:
+#    user:
+#      name: root
+#      password: 123456
   cloud:
     nacos:
       discovery:

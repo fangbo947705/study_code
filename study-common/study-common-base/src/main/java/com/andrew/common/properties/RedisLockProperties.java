@@ -20,11 +20,6 @@ public class RedisLockProperties {
     private String redisLockKeyPrefix = "REDIS_LOCK_";
 
     /**
-     * max try get lock time seconds
-     */
-    private long maxTryLockTime = 6000L;
-
-    /**
      * key lock time
      */
     private long lockTime = 50L;

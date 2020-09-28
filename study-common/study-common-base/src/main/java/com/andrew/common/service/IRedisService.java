@@ -22,11 +22,10 @@ public interface IRedisService {
      *
      * @param key
      * @param value
-     * @param maxTryLockTime
      * @param lockTime
      * @return
      */
-    boolean lock(String key, String value, long maxTryLockTime, long lockTime);
+    boolean lock(String key, String value, long lockTime);
 
     /**
      * 释放锁

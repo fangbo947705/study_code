@@ -3,3 +3,6 @@ global:
   response:
     handler:
       enable: true
+server:
+  servlet:
+    context-path: /${spring.application.name}
